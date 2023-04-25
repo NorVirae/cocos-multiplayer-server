@@ -7,6 +7,9 @@ export class Player extends Schema {
 
     @type("number")
     y: number = 2.22;
+
+    @type("number")
+    score: number = 0
 }
 
 export class State extends Schema {
@@ -24,10 +27,14 @@ export class RaceRoom extends Room<State> {
             const player = this.state.players.get(client.sessionId);
             player.x = data.x;
             player.y = data.y;
+            player.score = data.score
 
             console.log(this.state, player.x);
             this.broadcast("fly", data, { except: client });
         });
+
+
+
     }
 
     onJoin(client: Client, options) {
@@ -47,6 +54,5 @@ export class RaceRoom extends Room<State> {
     // }
 
     // onDispose() {
-
     // }
 }
