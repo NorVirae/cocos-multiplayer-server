@@ -9,7 +9,13 @@ export class Player extends Schema {
     y: number = 2.22;
 
     @type("number")
-    score: number = 0
+    score: number = 0;
+
+    @type("boolean")
+    pauseGame: boolean = false;
+
+    @type("number")
+    highestScore: number = 0;
 }
 
 export class State extends Schema {
@@ -27,14 +33,18 @@ export class RaceRoom extends Room<State> {
             const player = this.state.players.get(client.sessionId);
             player.x = data.x;
             player.y = data.y;
-            player.score = data.score
+            player.score = data.score;
 
             console.log(this.state, player.x);
             this.broadcast("fly", data, { except: client });
         });
 
-
-
+        this.onMessage("results", (client, data) => {
+            const player = this.state.players.get(client.sessionId)
+            player.pauseGame = data.pauseGame
+            player.highestScore = data.highestScore
+            this.broadcast("results", data, {except: client})
+        })
     }
 
     onJoin(client: Client, options) {
